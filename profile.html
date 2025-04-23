@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Профиль персонажа - PGHub</title>
+  <style>
+    body {
+      margin: 0;
+      background: #1e1e1e;
+      color: #eee;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .profile-container {
+      background: #2a2a2a;
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      width: 100%;
+    }
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 2px solid #1e90ff;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      color: #ffca28;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin: 0.5rem 0;
+    }
+    .back-button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #1e90ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .back-button:hover {
+      background: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <img id="profile-image" class="profile-image" src="" alt="Profile Image">
+    <h1 id="profile-name">Загрузка...</h1>
+    <p id="profile-age"></p>
+    <p id="profile-description"></p>
+    <a href="https://jonibak2.github.io/PGclick/index.html" class="back-button">Назад</a>
+  </div>
+
+  <script>
+    async function loadProfile() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const user = urlParams.get('user');
+      
+      if (!user) {
+        document.getElementById('profile-name').textContent = 'Ошибка: Пользователь не найден';
+        return;
+      }
+
+      try {
+        const response = await fetch('profiles.json');
+        const profiles = await response.json();
+        const profile = profiles.find(p => p.id === user);
+
+        if (profile) {
+          document.getElementById('profile-image').src = profile.avatar;
+          document.getElementById('profile-name').textContent = profile.name;
+          document.getElementById('profile-age').textContent = `Возраст: ${profile.age}`;
+          document.getElementById('profile-description').textContent = profile.description;
+        } else {
+          document.getElementById('profile-name').textContent = 'Пользователь не найден';
+        }
+      } catch (error) {
+        document.getElementById('profile-name').textContent = 'Ошибка загрузки профиля';
+        console.error(error);
+      }
+    }
+
+    loadProfile();
+  </script>
+</body>
+</html>
