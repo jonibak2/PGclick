@@ -7,40 +7,38 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       background: #000;
+      text-align: center;
     }
 
-    .container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    img {
+      max-width: 100%;
+      height: auto;
       display: block;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <img src="webackground copy.jpg" usemap="#image-map" alt="Фон с друзьями">
+  <img src="webackground copy.jpg" usemap="#image-map" alt="Фон с друзьями">
 
-    <map name="image-map">
-      <area
-        shape="poly"
-        coords="1625,644,1608,682,1564,661,1577,617,1557,543,1540,560,1516,536,1533,505,1550,485,1530,455,1506,444,1496,336,1530,299,1554,288,1557,200,1618,149,1679,193,1672,258,1676,278,1713,312,1727,417,1700,421,1703,482,1741,512,1730,556,1663,587,1626,611,1639,597,1632,600,1619,617,1618,615,1632,608"
-        href="https://www.instagram.com/modie78e/"
-        alt="modie78"
-        title="Открыть профиль modie78"
-      >
-    </map>
-  </div>
+  <map name="image-map">
+    <area
+      shape="poly"
+      coords="1625,644,1608,682,1564,661,1577,617,1557,543,1540,560,1516,536,1533,505,1550,485,1530,455,1506,444,1496,336,1530,299,1554,288,1557,200,1618,149,1679,193,1672,258,1676,278,1713,312,1727,417,1700,421,1703,482,1741,512,1730,556,1663,587,1626,611,1639,597,1632,600,1619,617,1618,615,1632,608"
+      href="https://www.instagram.com/modie78e/"
+      alt="modie78"
+      title="Открыть профиль modie78"
+    >
+  </map>
+
+  <!-- Подключаем скрипт для адаптивности -->
+  <script src="https://unpkg.com/image-map-resizer@1.0.10/js/imageMapResizer.min.js"></script>
+  <script>
+    window.onload = function() {
+      imageMapResize();
+    };
+  </script>
 
 </body>
 </html>
