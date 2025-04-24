@@ -4,33 +4,43 @@
   <meta charset="UTF-8">
   <title>PG78 - Друзья</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       background: #000;
-      text-align: center;
     }
-    img {
-      max-width: 100%;
-      height: auto;
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
   </style>
 </head>
 <body>
 
-  <!-- Фоновое изображение с активной зоной -->
-  <img src="bg.jpg" usemap="#image-map" alt="Фон с друзьями">
+  <div class="container">
+    <img src="bg.jpg" usemap="#image-map" alt="Фон с друзьями">
 
-  <map name="image-map">
-    <area
-      target="_self"
-      alt="DRAGOMAN"
-      title="Посмотреть профиль DRAGOMAN"
-      href="https://jonibak2.github.io/PGclick/profile.html?user=dragoman"
-      coords="151,606,204,598,204,550,175,527,112,519,95,582,57,628,133,655,208,649,229,623,243,599,239,572,237,541,226,526,209,513,185,506,108,498,70,515,43,551,40,604,32,626,53,640"
-      shape="poly"
-    >
-  </map>
+    <map name="image-map">
+      <area
+        shape="poly"
+        coords="151,606,204,598,204,550,175,527,112,519,95,582,57,628,133,655,208,649,229,623,243,599,239,572,237,541,226,526,209,513,185,506,108,498,70,515,43,551,40,604,32,626,53,640"
+        href="https://jonibak2.github.io/PGclick/profile.html?user=dragoman"
+        alt="DRAGOMAN"
+        title="Посмотреть профиль DRAGOMAN"
+      >
+    </map>
+  </div>
 
 </body>
 </html>
