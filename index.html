@@ -9,14 +9,17 @@
       margin: 0;
       padding: 0;
       background: #000;
+      width: 100%;
       height: 100%;
       overflow: hidden;
     }
     .map-wrapper {
-      width: 1515px; /* Исправлено */
-      height: 852px; /* Исправлено */
-      transform-origin: top left;
-      position: relative;
+      width: 1515px;
+      height: 852px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
     }
     .map-container {
       width: 100%;
@@ -55,8 +58,8 @@
     const mapWrapper = document.getElementById('mapWrapper');
     const scaleX = window.innerWidth / 1515;
     const scaleY = window.innerHeight / 852;
-    const scale = Math.min(scaleX, scaleY);
-    mapWrapper.style.transform = `scale(${scale})`;
+    const scale = Math.max(scaleX, scaleY); /* ВАЖНО: теперь берем max чтобы заполнить весь экран */
+    mapWrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
   }
 
   window.addEventListener('resize', scaleMap);
