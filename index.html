@@ -13,8 +13,8 @@
       overflow: hidden;
     }
     .map-wrapper {
-      width: 1920px;
-      height: 1080px;
+      width: 1515px; /* Исправлено */
+      height: 852px; /* Исправлено */
       transform-origin: top left;
       position: relative;
     }
@@ -53,8 +53,8 @@
 <script>
   function scaleMap() {
     const mapWrapper = document.getElementById('mapWrapper');
-    const scaleX = window.innerWidth / 1920;
-    const scaleY = window.innerHeight / 1080;
+    const scaleX = window.innerWidth / 1515;
+    const scaleY = window.innerHeight / 852;
     const scale = Math.min(scaleX, scaleY);
     mapWrapper.style.transform = `scale(${scale})`;
   }
