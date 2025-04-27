@@ -1,116 +1,224 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Профиль | PGClick</title>
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
-      background: #1e1e1e;
+      box-sizing: border-box;
+    }
+    body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #111;
       color: #eee;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .profile-container {
-      background: #2a2a2a;
+      align-items: flex-start;
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      text-align: center;
-      max-width: 400px;
-      width: 90%;
-      animation: fadeIn 0.5s ease;
+      overflow-x: hidden;
+    }
+    .profile-wrapper {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(30, 30, 30, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      animation: fadeIn 1s ease;
+      position: relative;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
     }
-    .profile-image {
+    .banner {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      filter: brightness(0.7);
+    }
+    .profile-content {
+      padding: 2rem;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .avatar {
       width: 150px;
       height: 150px;
       border-radius: 50%;
-      border: 3px solid #1e90ff;
+      border: 4px solid #1e90ff;
       object-fit: cover;
-      margin-bottom: 1rem;
+      position: absolute;
+      top: -75px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
     }
     h1 {
-      font-size: 1.8rem;
+      margin-top: 90px;
+      font-size: 2rem;
       color: #ffca28;
       margin-bottom: 0.5rem;
     }
-    .profile-info {
+    .birth {
       font-size: 1rem;
-      margin: 0.25rem 0;
+      margin-bottom: 1rem;
+      color: #bbb;
+    }
+    .awards {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+    .socials {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .social-cube {
+      width: 50px;
+      height: 50px;
+      background: #222;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 0.3s;
+      position: relative;
+    }
+    .social-cube img {
+      width: 24px;
+      height: 24px;
+    }
+    .social-cube:hover {
+      background: #1e90ff;
+    }
+    .tooltip {
+      display: none;
+      position: absolute;
+      bottom: 60px;
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .social-cube:hover .tooltip {
+      display: block;
     }
     .back-button {
-      margin-top: 1.5rem;
-      display: inline-block;
-      padding: 0.6rem 1.2rem;
+      display: block;
+      margin: 2rem auto 0;
+      padding: 0.7rem 1.5rem;
       background: #1e90ff;
       color: white;
-      border-radius: 6px;
       text-decoration: none;
+      border-radius: 6px;
       font-weight: bold;
-      transition: background 0.3s;
+      width: fit-content;
     }
     .back-button:hover {
       background: #007bff;
     }
   </style>
 </head>
+
 <body>
 
-  <div class="profile-container">
-    <img id="profile-image" class="profile-image" src="" alt="Аватарка">
-    <h1 id="profile-name">Загрузка...</h1>
-    <p class="profile-info" id="profile-age"></p>
-    <p class="profile-info" id="profile-description"></p>
+<div class="profile-wrapper" id="profile-wrapper">
+  <img id="banner" class="banner" src="" alt="Баннер">
+  <div class="profile-content" id="profile-content">
+    <img id="avatar" class="avatar" src="" alt="Аватарка">
+    <h1 id="name">Загрузка...</h1>
+    <p class="birth" id="birth"></p>
+    <div class="awards" id="awards"></div>
+
+    <div class="socials" id="socials"></div>
+
     <a href="index.html" class="back-button">← Назад</a>
   </div>
+</div>
 
-  <script>
-    async function loadProfile() {
-      const params = new URLSearchParams(window.location.search);
-      const userId = params.get('user');
+<script>
+async function loadProfile() {
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get('user');
 
-      if (!userId) {
-        showError('Ошибка: Пользователь не найден');
-        return;
+  if (!userId) {
+    showError('Ошибка: Пользователь не найден');
+    return;
+  }
+
+  try {
+    const response = await fetch('profiles.json');
+    const profiles = await response.json();
+    const profile = profiles.find(p => p.id === userId);
+
+    if (profile) {
+      document.getElementById('avatar').src = profile.avatar || '';
+      document.getElementById('banner').src = profile.banner || '';
+      document.getElementById('profile-wrapper').style.backgroundImage = `url('${profile.background || ''}')`;
+
+      document.getElementById('name').textContent = profile.name || 'Без имени';
+
+      if (profile.birthdate) {
+        const birthDate = new Date(profile.birthdate);
+        const age = new Date().getFullYear() - birthDate.getFullYear();
+        document.getElementById('birth').textContent = `🎂 ${birthDate.toLocaleDateString('ru-RU')} (${age} лет)`;
       }
 
-      try {
-        const response = await fetch('profiles.json');
-        const profiles = await response.json();
-        const profile = profiles.find(p => p.id === userId);
-
-        if (profile) {
-          document.getElementById('profile-image').src = profile.avatar || '';
-          document.getElementById('profile-name').textContent = profile.name || 'Без имени';
-          document.getElementById('profile-age').textContent = profile.age ? `Возраст: ${profile.age}` : '';
-          document.getElementById('profile-description').textContent = profile.description || '';
-        } else {
-          showError('Профиль не найден');
-        }
-      } catch (error) {
-        console.error(error);
-        showError('Ошибка загрузки профиля');
+      if (profile.awards && profile.awards.length > 0) {
+        document.getElementById('awards').innerHTML = "🏆 " + profile.awards.join(", ");
       }
-    }
 
-    function showError(message) {
-      document.getElementById('profile-name').textContent = message;
-      document.getElementById('profile-image').style.display = 'none';
-      document.getElementById('profile-age').style.display = 'none';
-      document.getElementById('profile-description').style.display = 'none';
-    }
+      const socialsDiv = document.getElementById('socials');
+      if (profile.discordTag) {
+        socialsDiv.innerHTML += `
+          <div class="social-cube">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord">
+            <div class="tooltip">${profile.discordTag}</div>
+          </div>`;
+      }
+      if (profile.telegram) {
+        socialsDiv.innerHTML += `
+          <a href="${profile.telegram}" target="_blank" class="social-cube">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
+          </a>`;
+      }
+      if (profile.instagram) {
+        socialsDiv.innerHTML += `
+          <a href="${profile.instagram}" target="_blank" class="social-cube">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+          </a>`;
+      }
 
-    loadProfile();
-  </script>
+    } else {
+      showError('Профиль не найден');
+    }
+  } catch (error) {
+    console.error(error);
+    showError('Ошибка загрузки профиля');
+  }
+}
+
+function showError(message) {
+  document.getElementById('name').textContent = message;
+  document.getElementById('birth').style.display = 'none';
+  document.getElementById('awards').style.display = 'none';
+  document.getElementById('socials').style.display = 'none';
+}
+
+loadProfile();
+</script>
 
 </body>
 </html>
