@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Профиль персонажа - PGHub</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Профиль | PGClick</title>
   <style>
     body {
       margin: 0;
+      padding: 0;
       background: #1e1e1e;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #eee;
-      font-family: sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,34 +19,44 @@
     .profile-container {
       background: #2a2a2a;
       padding: 2rem;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
       text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
       max-width: 400px;
-      width: 100%;
+      width: 90%;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
     .profile-image {
       width: 150px;
       height: 150px;
       border-radius: 50%;
-      border: 2px solid #1e90ff;
+      border: 3px solid #1e90ff;
+      object-fit: cover;
       margin-bottom: 1rem;
     }
     h1 {
+      font-size: 1.8rem;
       color: #ffca28;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
-    p {
-      margin: 0.5rem 0;
+    .profile-info {
+      font-size: 1rem;
+      margin: 0.25rem 0;
     }
     .back-button {
+      margin-top: 1.5rem;
       display: inline-block;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
+      padding: 0.6rem 1.2rem;
       background: #1e90ff;
       color: white;
+      border-radius: 6px;
       text-decoration: none;
-      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.3s;
     }
     .back-button:hover {
       background: #007bff;
@@ -53,44 +64,53 @@
   </style>
 </head>
 <body>
+
   <div class="profile-container">
-    <img id="profile-image" class="profile-image" src="" alt="Profile Image">
+    <img id="profile-image" class="profile-image" src="" alt="Аватарка">
     <h1 id="profile-name">Загрузка...</h1>
-    <p id="profile-age"></p>
-    <p id="profile-description"></p>
-    <a href="https://jonibak2.github.io/PGclick/index.html" class="back-button">Назад</a>
+    <p class="profile-info" id="profile-age"></p>
+    <p class="profile-info" id="profile-description"></p>
+    <a href="index.html" class="back-button">← Назад</a>
   </div>
 
   <script>
     async function loadProfile() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const user = urlParams.get('user');
-      
-      if (!user) {
-        document.getElementById('profile-name').textContent = 'Ошибка: Пользователь не найден';
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get('user');
+
+      if (!userId) {
+        showError('Ошибка: Пользователь не найден');
         return;
       }
 
       try {
         const response = await fetch('profiles.json');
         const profiles = await response.json();
-        const profile = profiles.find(p => p.id === user);
+        const profile = profiles.find(p => p.id === userId);
 
         if (profile) {
-          document.getElementById('profile-image').src = profile.avatar;
-          document.getElementById('profile-name').textContent = profile.name;
-          document.getElementById('profile-age').textContent = `Возраст: ${profile.age}`;
-          document.getElementById('profile-description').textContent = profile.description;
+          document.getElementById('profile-image').src = profile.avatar || '';
+          document.getElementById('profile-name').textContent = profile.name || 'Без имени';
+          document.getElementById('profile-age').textContent = profile.age ? `Возраст: ${profile.age}` : '';
+          document.getElementById('profile-description').textContent = profile.description || '';
         } else {
-          document.getElementById('profile-name').textContent = 'Пользователь не найден';
+          showError('Профиль не найден');
         }
       } catch (error) {
-        document.getElementById('profile-name').textContent = 'Ошибка загрузки профиля';
         console.error(error);
+        showError('Ошибка загрузки профиля');
       }
+    }
+
+    function showError(message) {
+      document.getElementById('profile-name').textContent = message;
+      document.getElementById('profile-image').style.display = 'none';
+      document.getElementById('profile-age').style.display = 'none';
+      document.getElementById('profile-description').style.display = 'none';
     }
 
     loadProfile();
   </script>
+
 </body>
 </html>
